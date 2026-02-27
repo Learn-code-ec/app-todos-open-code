@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Todo App</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header Section -->
+        <header class="header">
+            <div class="header-top">
+                <img src="https://i.pravatar.cc/150?img=47" alt="User Profile" class="avatar">
+                <div class="header-actions">
+                    <button id="themeToggleBtn" class="icon-btn" aria-label="Toggle Dark Mode">
+                        <!-- Sun/Moon Icon managed in CSS or JS -->
+                        <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                        <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                    </button>
+                    <button id="addTaskBtn" class="icon-btn add-btn" aria-label="Add Task">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    </button>
+                    <button class="icon-btn notif-btn" aria-label="Notifications">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                        <span class="badge">8</span>
+                    </button>
+                </div>
+            </div>
+            <div class="greeting">
+                <h1>Hello, <strong>Jane</strong></h1>
+                <p>You have <span id="pendingCountHeader">0</span> tasks to complete</p>
+            </div>
+        </header>
+
+        <!-- Summary Statistics -->
+        <section class="summary-cards">
+            <div class="card summary-card summary-total">
+                <div class="icon-wrapper purple-bg">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                </div>
+                <p class="summary-title">Task Today</p>
+                <h2 id="totalTasksCount">0 <span>Tasks</span></h2>
+            </div>
+            <div class="card summary-card summary-progress">
+                <div class="icon-wrapper blue-bg">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                </div>
+                <p class="summary-title">In Progress</p>
+                <h2 id="inProgressCount">0 <span>Tasks</span></h2>
+            </div>
+        </section>
+
+        <!-- Main Task List -->
+        <main class="main-content">
+            <div class="section-header">
+                <h2>Your Task</h2>
+                <div class="date-scroller">
+                    <span class="date-chip active">Monday 16 Oct, 2023</span>
+                    <span class="date-chip">Tue</span>
+                    <span class="date-chip">Wed</span>
+                    <span class="date-chip">Thu</span>
+                </div>
+            </div>
+
+            <ul id="taskList" class="task-list">
+                <!-- Tasks will be rendered here dynamically -->
+            </ul>
+        </main>
+
+        <!-- Floating Modal for Add/Edit -->
+        <div id="taskModal" class="modal hidden">
+            <div class="modal-content glass">
+                <h2 id="modalTitle">New Task</h2>
+                <form id="taskForm" novalidate>
+                    <div class="form-group">
+                        <label for="taskTitle">Task Name</label>
+                        <input type="text" id="taskTitle" required placeholder="e.g. 3D Character Cute Robot">
+                        <span class="error-msg" id="titleError">Please enter a task name.</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskSubtitle">Subtitle (optional)</label>
+                        <input type="text" id="taskSubtitle" placeholder="e.g. UI Design">
+                    </div>
+                    <div class="form-group-row">
+                        <div class="form-group">
+                            <label for="taskPriority">Priority</label>
+                            <select id="taskPriority">
+                                <option value="Important">Important</option>
+                                <option value="Normal">Normal</option>
+                                <option value="Low">Low</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="taskColor">Theme Color</label>
+                            <select id="taskColor">
+                                <option value="purple">Purple</option>
+                                <option value="blue">Blue</option>
+                                <option value="green">Green</option>
+                                <option value="orange">Orange</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" id="cancelBtn" class="btn btn-secondary">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save Task</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Delete Confirmation Modal -->
+        <div id="deleteModal" class="modal hidden">
+            <div class="modal-content glass delete-modal">
+                <div class="modal-icon danger">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                </div>
+                <h2>Delete Task?</h2>
+                <p>Are you sure you want to delete this task? This action cannot be undone.</p>
+                <div class="modal-actions">
+                    <button type="button" id="cancelDeleteBtn" class="btn btn-secondary">Cancel</button>
+                    <button type="button" id="confirmDeleteBtn" class="btn btn-danger">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="toast-container"></div>
+    
+    <!-- Template for a single task -->
+    <template id="taskTemplate">
+        <li class="task-card">
+            <div class="task-info">
+                <h3 class="task-title"></h3>
+                <p class="task-subtitle"></p>
+                
+                <div class="task-meta">
+                    <span class="badge priority-badge"></span>
+                    <span class="badge date-badge">Today</span>
+                    <div class="avatars">
+                        <img src="https://i.pravatar.cc/150?img=33" alt="user">
+                        <img src="https://i.pravatar.cc/150?img=12" alt="user">
+                        <img src="https://i.pravatar.cc/150?img=68" alt="user">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="task-actions">
+                <button class="complete-btn" aria-label="Toggle Complete">
+                    <svg class="check-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </button>
+                <div class="edit-delete-actions">
+                    <button class="edit-btn" aria-label="Edit Task">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                    </button>
+                    <button class="delete-btn" aria-label="Delete Task">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    </button>
+                </div>
+            </div>
+        </li>
+    </template>
+
+    <script src="assets/js/app.js"></script>
+</body>
+</html>
