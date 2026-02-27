@@ -390,9 +390,14 @@ button {
 }
 
 .complete-btn .check-icon {
-  opacity: 0;
-  transform: scale(0.5);
+  opacity: 0.3;
+  transform: scale(0.8);
   transition: var(--transition);
+}
+
+.complete-btn:hover .check-icon {
+  opacity: 0.6;
+  transform: scale(1);
 }
 
 /* Completed State */
@@ -410,6 +415,12 @@ button {
 .task-card.completed .complete-btn .check-icon {
   opacity: 1;
   transform: scale(1);
+}
+
+.task-card.completed .edit-btn {
+  opacity: 0.3;
+  pointer-events: none; /* Prevents clicking */
+  cursor: not-allowed;
 }
 
 .edit-delete-actions {
@@ -540,7 +551,7 @@ input:focus, select:focus { border-color: #6366f1; box-shadow: 0 0 0 2px rgba(99
   flex-direction: column;
   gap: 12px;
   z-index: 2000;
-  pointer-events: none;
+  pointer-events: none; /* Prevents container from blocking clicks */
 }
 
 .toast {
@@ -557,6 +568,7 @@ input:focus, select:focus { border-color: #6366f1; box-shadow: 0 0 0 2px rgba(99
   transform: translateX(120%);
   transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   border-left: 4px solid var(--success-color);
+  pointer-events: auto; /* Re-enable pointer events for the individual toast */
 }
 
 .toast.show {

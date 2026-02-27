@@ -147,6 +147,12 @@ const DOM = {
  * Toast Notification System
  */
 const showToast = (message, type = 'success') => {
+    // Remove existing toast if any
+    const existingToast = DOM.toastContainer.querySelector('.toast');
+    if (existingToast) {
+        existingToast.remove();
+    }
+
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
     
@@ -167,11 +173,32 @@ const showToast = (message, type = 'success') => {
     // Trigger animation
     setTimeout(() => toast.classList.add('show'), 10);
 
-    // Remove after 3 seconds
-    setTimeout(() => {
+    // Timer Logic for Pause/Resume on Hover
+    let timer;
+    let remainingTime = 3000;
+    let startTime;
+
+    const hideToast = () => {
         toast.classList.remove('show');
         setTimeout(() => toast.remove(), 300);
-    }, 3000);
+    };
+
+    const resumeTimer = () => {
+        startTime = Date.now();
+        timer = setTimeout(hideToast, remainingTime);
+    };
+
+    const pauseTimer = () => {
+        clearTimeout(timer);
+        remainingTime -= (Date.now() - startTime);
+    };
+
+    // Attach hover listeners
+    toast.addEventListener('mouseenter', pauseTimer);
+    toast.addEventListener('mouseleave', resumeTimer);
+
+    // Start initial timer
+    resumeTimer();
 };
 
 /**
@@ -240,9 +267,16 @@ const render = (currentState) => {
         deleteBtn.addEventListener('click', () => dispatch({ type: 'REQUEST_DELETE_TASK', payload: task.id }));
         
         const editBtn = li.querySelector('.edit-btn');
-        editBtn.addEventListener('click', () => {
-            dispatch({ type: 'OPEN_EDIT_MODAL', payload: task });
-        });
+        
+        // Disable edit button visually and logically if task is completed
+        if (task.completed) {
+            editBtn.disabled = true;
+            editBtn.setAttribute('aria-disabled', 'true');
+        } else {
+            editBtn.addEventListener('click', () => {
+                dispatch({ type: 'OPEN_EDIT_MODAL', payload: task });
+            });
+        }
 
         DOM.taskList.appendChild(clone);
     });
